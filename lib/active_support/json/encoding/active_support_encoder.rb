@@ -90,16 +90,6 @@ module ActiveSupport
             @seen.delete(value.__id__)
           end
       end
-
-      class << self
-        remove_method :encode_big_decimal_as_string, :encode_big_decimal_as_string=
-
-        # If false, serializes BigDecimal objects as numeric instead of wrapping
-        # them in a string.
-        attr_accessor :encode_big_decimal_as_string
-      end
-
-      self.encode_big_decimal_as_string = true
     end
   end
 end
@@ -124,6 +114,7 @@ end
 
 class String
   def encode_json(encoder) #:nodoc:
+    # TODO(AC) I don't think this exists anymore in Rails 5
     ActiveSupport::JSON::Encoding::ActiveSupportEncoder.escape(self)
   end
 end
@@ -152,7 +143,7 @@ class BigDecimal
 
   def as_json(options = nil) #:nodoc:
     if finite?
-      ActiveSupport.encode_big_decimal_as_string ? to_s : self
+      self
     else
       nil
     end
